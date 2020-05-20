@@ -9,7 +9,7 @@ GoMonit Golang API for Monit
 
 Simple golang agent API for Monit.
 Can be used to perform some simple action on Monit daemon :
-- retreive current status,
+- retrieve current status,
 - start a service,
 - stop a service
 - activate / deactivate monitoring on a service
