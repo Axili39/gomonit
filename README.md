@@ -1,6 +1,12 @@
 GoMonit Golang API for Monit
 ============================
 
+*Monit is a free open source utility for managing and monitoring, processes, programs, files, directories and filesystems on a UNIX system. Monit conducts automatic maintenance and repair and can execute meaningful causal actions in error situations.*
+
+**Monit Source Code** https://bitbucket.org/tildeslash/monit/src/master/
+
+**Monit Tildeslash official website** https://mmonit.com/monit/
+
 Simple golang agent API for Monit.
 Can be used to perform some simple action on Monit daemon :
 - retreive current status,
@@ -29,7 +35,7 @@ func main() {
 		return
 	}
 
-	// Show current status Status
+	// Show current status
 	out,_ := json.Marshal(&agent.Status)
 	fmt.Printf("%s\n",string(out))
 
