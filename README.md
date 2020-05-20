@@ -19,6 +19,20 @@ Can be used to perform some simple action on Monit daemon :
 go get http://github.com/Axili39/gomonit
 ```
 
+*prerequisites*
+
+Activate http in /etc/monit/monitrc config file :
+- specify a bind address,
+- specify admin/password credential
+
+*see /etc/monit/monitrc config file instructions, for more informations*
+
+*Example*
+```
+set httpd port 2812 and
+     use address 127.0.0.1
+     allow admin:monit
+```
 *see examples* 
 ```
 package main
