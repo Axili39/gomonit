@@ -54,7 +54,7 @@ func cmd(args []string, action string) {
 		cmdCli.PrintDefaults()
 		return
 	}
-	agent, err := gomonit.NewMonitAgent(monitAddr, "admin:monit")
+	agent, err := gomonit.NewMonitAgent(monitAddr, monitAuth)
 	if err != nil {
 		fmt.Printf("%v\n",err)
 		return
