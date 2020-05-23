@@ -2,8 +2,11 @@ package gomonit
 
 import (
 	"encoding/xml"
+	"encoding/json"
 	"golang.org/x/net/html/charset"
-	"io"		
+	"io"	
+	"os"
+	"fmt"	
 )
 
 // MonitStatus This structure embedded all data returned by monit daemon
@@ -11,7 +14,7 @@ type MonitStatus struct {
 	XMLName xml.Name `xml:"monit" json:"-"`
 	Server 			Server 		`xml:"server" json:"server"`
 	Platform 		Platform 	`xml:"platform" json:"platform"`
-	Service 		[]Service 	`xml:"service" json:"service"`
+	Services 		[]Service 	`xml:"service" json:"service"`
 }
 
 // Server "server" part of MonitStatus
@@ -93,6 +96,25 @@ type Service struct {
 			KiloBytes	int64	`xml:"kilobyte" json:"kilobyte"`
 		}	`xml:"memory" json:"memory"`
 	} 						`xml:"system" json:"system,omitempty"`
+	Link *struct {
+		State 		int			`xml:"state" json:"state"`
+		Speed		int64		`xml:"speed" json:"speed"`
+		Duplex		int			`xml:"duplex" json:"duplex"`
+		Download	*NetStats	`xml:"download" json:"download"`
+		Upload		*NetStats	`xml:"upload" json:"upload"`
+	}	`xml:"link" json:"link,omitempty"`
+}
+
+// NetStats Link network statistics
+type NetStats struct {
+	Packet	*NetStatElem `xml:"packets" json:"packets"`
+	Bytes	*NetStatElem `xml:"bytes" json:"bytes"`	
+	Errors	*NetStatElem `xml:"errors" json:"errors"`	
+}
+// NetStatElem parts of NetStats				
+type NetStatElem struct {
+	Now		int64	`xml:"now" json:"now"`
+	Total	int64	`xml:"total" json:"total"`
 }
 
 // Load : Load MonitStatus from io.Reader
@@ -101,4 +123,27 @@ func (r *MonitStatus)Load(file io.Reader) error {
     decoder.CharsetReader = charset.NewReaderLabel
 	err := decoder.Decode(r)
 	return err
+}
+
+// 
+func (r *MonitStatus)GetService(name string) *Service {
+	for _,s := range r.Services {
+		if s.Name == name {
+			return &s
+		}
+	}
+	return nil
+}
+
+func (r *MonitStatus)Print(w *os.File) {
+	b, err := json.MarshalIndent(r, "", "  ")
+	if err == nil {
+			fmt.Fprintln(w, string(b))
+	}
+}
+func (s *Service)Print(w *os.File) {
+	b, err := json.MarshalIndent(s, "", "  ")
+	if err == nil {
+			fmt.Fprintln(w, string(b))
+	}
 }

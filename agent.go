@@ -8,6 +8,7 @@ import (
 	"strings"
 	"net/url"
 	"strconv"
+	"errors"
 )
 
 // MonitAgent Agent class that can :
@@ -68,7 +69,7 @@ func (m *MonitAgent)RequestStatus() error{
 }
 
 // DoAction Perform new action on Monit Daemon.
-func (m *MonitAgent)DoAction(service string, action string) error {
+func (m *MonitAgent)doAction(service string, action string) error {
 	u, _ := url.ParseRequestURI(m.URL)
     u.Path = "/_doaction"
     urlStr := u.String()
@@ -98,3 +99,29 @@ func (m *MonitAgent)DoAction(service string, action string) error {
 	return error
 	//TODO exploit status code fmt.Println(resp.Status)
 }
+
+func (m *MonitAgent)CmdService(service string, action string) error {
+	// Commond must exists
+	if action != "start" &&
+		action != "stop" &&
+		action != "monitor" &&
+		action != "unmonitor" {
+			return errors.New("Unsupported action")
+	}
+	// Service Must exist
+	if m.Status.GetService(service) == nil {
+		return errors.New("Service doesn't exists")
+	}
+
+	return m.doAction(service, action)
+}
+
+func (m *MonitAgent)StartService(service string) error {
+	// Service Must exist
+	if m.Status.GetService(service) == nil {
+		return errors.New("Service doesn't exists")
+	}
+
+	return m.doAction(service, "start")
+}
+
