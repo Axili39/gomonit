@@ -7,6 +7,8 @@ import (
 	"golang.org/x/net/publicsuffix"
 	"strings"
 	"net/url"
+	"net"
+	"context"
 	"strconv"
 	"errors"
 )
@@ -24,14 +26,37 @@ type MonitAgent struct {
 
 // NewMonitAgent Create new MonitAgent instance and automatically try to connect to daemon and 
 // retrieve current status.
-func NewMonitAgent(URL string, AuthString string) (*MonitAgent, error) {
+func NewMonitAgent(URL string, authString string) (*MonitAgent, error) {
+	var httpc http.Client
+	var baseURL string
+
 	// Prepare Cookie JAR
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
 		return nil, err
 	}
 
-	agent := MonitAgent{(AuthString != ""), AuthString, URL, &http.Client{Jar: jar}, nil}
+	// Init http client
+	fields := strings.SplitN(URL, "://", 2)
+	if fields[0] == "unix" {
+		// Transport is UNIX
+		httpc = http.Client{
+			Jar: jar,
+			Transport: &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", fields[1])
+				},
+			},
+		}
+		baseURL = "http://unix"
+	} else {
+		// Transport is TCP
+		baseURL = URL
+		httpc = http.Client{Jar: jar}
+	}
+
+	// Init Agent
+	agent := MonitAgent{(authString != ""), authString, baseURL, &httpc, nil}
 
 	// Do a first request to init status
 	err = agent.RequestStatus()
