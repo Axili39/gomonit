@@ -116,7 +116,6 @@ type NetStatElem struct {
 	Now		int64	`xml:"now" json:"now"`
 	Total	int64	`xml:"total" json:"total"`
 }
-
 // Load : Load MonitStatus from io.Reader
 func (r *MonitStatus)Load(file io.Reader) error {
 	decoder := xml.NewDecoder(file)
@@ -124,8 +123,7 @@ func (r *MonitStatus)Load(file io.Reader) error {
 	err := decoder.Decode(r)
 	return err
 }
-
-// 
+// GetService : Get Service info from Status
 func (r *MonitStatus)GetService(name string) *Service {
 	for _,s := range r.Services {
 		if s.Name == name {
@@ -134,13 +132,14 @@ func (r *MonitStatus)GetService(name string) *Service {
 	}
 	return nil
 }
-
+// Print : Dump Status to File (json format)
 func (r *MonitStatus)Print(w *os.File) {
 	b, err := json.MarshalIndent(r, "", "  ")
 	if err == nil {
 			fmt.Fprintln(w, string(b))
 	}
 }
+// Print : Dump Service info to File (json format)
 func (s *Service)Print(w *os.File) {
 	b, err := json.MarshalIndent(s, "", "  ")
 	if err == nil {

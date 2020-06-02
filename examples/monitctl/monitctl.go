@@ -80,6 +80,6 @@ func main() {
 	case "unmonitor":
 		cmd(os.Args[2:], "unmonitor")
 	default:
-		fmt.Println("%s show|start|stop|unmonitor")
+		fmt.Printf("%s show|start|stop|unmonitor\n",os.Args[0])
 	}
 }

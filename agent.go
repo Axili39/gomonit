@@ -17,11 +17,11 @@ import (
 //	- retrieve status from Monit Daemon
 // 	- Invoke Action on service (start / stop / monitor / unmonitor) 
 type MonitAgent struct {
-	Auth 		bool
-	AuthString  string
-	URL			string
-	client 		*http.Client
-	Status		*MonitStatus
+	Auth 		bool			// Authentication needed
+	AuthString  string			// Authentication info ex: admin:monit
+	URL			string			// Monit httpd url, can be unix:///var/run/monit.sock, httpd://<host>:<port>
+	client 		*http.Client	// internal : http client used to perform request to Monit
+	Status		*MonitStatus	// Last Status Obtained from Monit
 }
 
 // NewMonitAgent Create new MonitAgent instance and automatically try to connect to daemon and 
@@ -30,7 +30,7 @@ func NewMonitAgent(URL string, authString string) (*MonitAgent, error) {
 	var httpc http.Client
 	var baseURL string
 
-	// Prepare Cookie JAR
+	// Prepare Cookie JAR, cookie management is mandatory to correctly pass the SecurityToken while performing request
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
 		return nil, err
@@ -61,7 +61,11 @@ func NewMonitAgent(URL string, authString string) (*MonitAgent, error) {
 	// Do a first request to init status
 	err = agent.RequestStatus()
 
-	return &agent, err
+	if err != nil {
+		return nil, err
+	}
+
+	return &agent, nil
 }
 
 // requestStatus : internal function used to build a status
@@ -125,6 +129,7 @@ func (m *MonitAgent)doAction(service string, action string) error {
 	//TODO exploit status code fmt.Println(resp.Status)
 }
 
+// CmdService Perform command on service
 func (m *MonitAgent)CmdService(service string, action string) error {
 	// Commond must exists
 	if action != "start" &&
@@ -141,6 +146,7 @@ func (m *MonitAgent)CmdService(service string, action string) error {
 	return m.doAction(service, action)
 }
 
+// StartService perform monit start <service> command
 func (m *MonitAgent)StartService(service string) error {
 	// Service Must exist
 	if m.Status.GetService(service) == nil {
