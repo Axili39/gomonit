@@ -1,4 +1,6 @@
-![Go](https://github.com/Axili39/gomonit/workflows/Go/badge.svg)
+![Build & Test](https://github.com/Axili39/gomonit/workflows/Build%20&%20Test/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/Axili39/gomonit/badge.svg?branch=master)](https://coveralls.io/github/Axili39/gomonit?branch=master)
+
 GoMonit Golang API for Monit
 ============================
 
