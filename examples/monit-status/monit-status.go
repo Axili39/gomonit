@@ -17,7 +17,7 @@ func main() {
 	fmt.Printf("%s\n",string(out))
 
 	// Do an action on service
-	err = agent.DoAction("foo", "start")
+	err = agent.StartService("foo")
 	if err != nil {
 		fmt.Printf("%v\n",err)
 		return
