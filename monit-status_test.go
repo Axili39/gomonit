@@ -1,8 +1,8 @@
 package gomonit
 
-import(
-	"testing"
+import (
 	"os"
+	"testing"
 )
 
 func TestUnMarshal(t *testing.T) {
