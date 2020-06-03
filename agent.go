@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/cookiejar"
@@ -133,6 +134,10 @@ func (m *MonitAgent) doAction(service string, action string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad status code %d", resp.StatusCode)
+	}
 	//TODO do anything with resp content ? resp, error := m.client.Do(r)
 	//TODO exploit status code fmt.Println(resp.Status)
 	return err
@@ -157,6 +162,10 @@ func (m *MonitAgent) CmdService(service string, action string) error {
 
 // StartService perform monit start <service> command
 func (m *MonitAgent) StartService(service string) error {
+	// Service Must exist
+	if m.Status == nil {
+		return errors.New("Invalid current Monit Status")
+	}
 	// Service Must exist
 	if m.Status.GetService(service) == nil {
 		return errors.New("Service doesn't exists")

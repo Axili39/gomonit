@@ -19,6 +19,18 @@ func TestUnMarshal(t *testing.T) {
 	if len(status.Services) != 6 {
 		t.Errorf("bad services count, got %d/%d", len(status.Services), 6)
 	}
+
+	// Check GetService
+	service := status.GetService("service1")
+	if service == nil {
+		t.Error("GetService Failed")
+	}
+
+	// Check GetService
+	service = status.GetService("unknown")
+	if service != nil {
+		t.Error("GetService on unknown name Failed")
+	}
 }
 
 /*
@@ -41,6 +53,3 @@ func BenchmarkReverse(b *testing.B) {
 	}
 }
 */
-func TestMain(m *testing.M) {
-	os.Exit(m.Run())
-}
