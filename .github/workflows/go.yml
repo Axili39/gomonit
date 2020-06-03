@@ -7,9 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
 
   build:
     name: Build
