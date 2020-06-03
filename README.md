@@ -1,3 +1,4 @@
+![Go](https://github.com/Axili39/gomonit/workflows/Go/badge.svg)
 GoMonit Golang API for Monit
 ============================
 
