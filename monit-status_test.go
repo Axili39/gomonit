@@ -32,24 +32,3 @@ func TestUnMarshal(t *testing.T) {
 		t.Error("GetService on unknown name Failed")
 	}
 }
-
-/*
-func BenchmarkResolve(b *testing.B) {
-	b.ReportAllocs()
-	var r Resolver
-	r.Init()
-
-	for i := 0; i < b.N; i++ {
-		r.Resolve("alice")
-	}
-}
-func BenchmarkReverse(b *testing.B) {
-	b.ReportAllocs()
-	var r Resolver
-	r.Init()
-	addr,_ := net.ResolveUDPAddr("udp", "127.0.0.1:8003")
-	for i := 0; i < b.N; i++ {
-		r.Reverse(addr)
-	}
-}
-*/
