@@ -35,8 +35,13 @@ func (m *MonitStub) DoAction(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		err := r.ParseForm()
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
-		r.ParseForm()
+
 		m.lastAction = r.FormValue("action")
 		m.lastService = r.FormValue("service")
 	} else {
