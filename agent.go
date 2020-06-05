@@ -178,7 +178,7 @@ func (m *MonitAgent) StartService(service string) error {
 	return m.doAction(service, "start")
 }
 
-// StartService perform monit start <service> command
+// StopService perform monit stop <service> command
 func (m *MonitAgent) StopService(service string) error {
 	return m.CmdService(service, "stop")
 }
