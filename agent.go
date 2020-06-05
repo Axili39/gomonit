@@ -166,16 +166,7 @@ func (m *MonitAgent) CmdService(service string, action string) error {
 
 // StartService perform monit start <service> command
 func (m *MonitAgent) StartService(service string) error {
-	// Service Must exist
-	if m.Status == nil {
-		return errors.New("Invalid current Monit Status")
-	}
-	// Service Must exist
-	if m.Status.GetService(service) == nil {
-		return errors.New("Service doesn't exists")
-	}
-
-	return m.doAction(service, "start")
+	return m.CmdService(service, "start")
 }
 
 // StopService perform monit stop <service> command
