@@ -1,4 +1,5 @@
 ![Build & Test](https://github.com/Axili39/gomonit/workflows/Build%20&%20Test/badge.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8929ee11e1d44c5b98f3752fd8347b14)](https://app.codacy.com/manual/Axili39/gomonit?utm_source=github.com&utm_medium=referral&utm_content=Axili39/gomonit&utm_campaign=Badge_Grade_Dashboard)
 [![Coverage Status](https://coveralls.io/repos/github/Axili39/gomonit/badge.svg?branch=master)](https://coveralls.io/github/Axili39/gomonit?branch=master)
 
 GoMonit Golang API for Monit
