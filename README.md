@@ -6,37 +6,40 @@ GoMonit Golang API for Monit
 
 *Monit is a free open source utility for managing and monitoring, processes, programs, files, directories and filesystems on a UNIX system. Monit conducts automatic maintenance and repair and can execute meaningful causal actions in error situations.*
 
-**Monit Source Code** https://bitbucket.org/tildeslash/monit/src/master/
+**Monit Source Code** [https://bitbucket.org/tildeslash/monit/src/master/#]
 
-**Monit Tildeslash official website** https://mmonit.com/monit/
+**Monit Tildeslash official website** [https://mmonit.com/monit/]
 
 Simple golang agent API for Monit.
 Can be used to perform some simple action on Monit daemon :
-- retrieve current status,
-- start a service,
-- stop a service
-- activate / deactivate monitoring on a service
+  - retrieve current status,
+  - start a service,
+  - stop a service
+  - activate / deactivate monitoring on a service
 
-*usage*
-```
+Usage
+-----
+```shell
 go get http://github.com/Axili39/gomonit
 ```
 
-*prerequisites*
+Prerequisites
+-------------
 
 Activate http in /etc/monit/monitrc config file :
-- specify a bind address,
-- specify admin/password credential
+  - specify a bind address,
+  - specify admin/password credential
 
-*see /etc/monit/monitrc config file instructions, for more informations*
-
-*Example*
-```
+```apacheconf
 set httpd port 2812 and
      use address 127.0.0.1
      allow admin:monit
 ```
-*see examples* 
+Note: *see /etc/monit/monitrc config file instructions, for more informations*
+
+Examples
+--------
+
 ```go
 package main
 import (
