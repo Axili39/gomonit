@@ -138,8 +138,8 @@ func (m *MonitAgent) doAction(service string, action string) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("bad status code %d", resp.StatusCode)
 	}
-	//TODO do anything with resp content ? resp, error := m.client.Do(r)
-	//TODO exploit status code fmt.Println(resp.Status)
+	// TODO do anything with resp content ? resp, error := m.client.Do(r)
+	// TODO exploit status code fmt.Println(resp.Status)
 	return err
 }
 
