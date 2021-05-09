@@ -2,89 +2,80 @@ name: "Build & Test"
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [master, develop]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14.15
+        id: go
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.13
-      id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      - name: Build
+        run: |
+          go mod download
+          go mod tidy
+          go build -v .
 
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
-        if [ -f Gopkg.toml ]; then
-            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-            dep ensure
-        fi
-    - name: Install golangci-lint
-      run: |
-        go get github.com/golangci/golangci-lint/cmd/golangci-lint
-        
-    - name: Run linters
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin   
-        ./pre-commit
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          skip-go-installation: true
 
-    - name: Build
-      run: go build -v .
-      
   test:
     strategy:
       matrix:
-        go-version: [1.13.x]
+        go-version: [1.14.15]
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-    - name: Install Go
-      if: success()
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Run tests
-      run: go test -v -covermode=count 
-      
+      - name: Install Go
+        if: success()
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: go test -v -covermode=count
+
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - name: Install Go
-      if: success()
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.13
+      - name: Install Go
+        if: success()
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14.15
 
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Calc coverage 
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin   
-        go test -v -covermode=count -coverprofile=coverage.out
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Convert coverage to lcov
-      uses: jandelgado/gcov2lcov-action@v1.0.0
-      with:
+      - name: Calc coverage
+        run: |
+          go mod download
+          go mod tidy
+          export PATH=$PATH:$(go env GOPATH)/bin
+          go test -v -covermode=count -coverprofile=coverage.out
+
+      - name: Convert coverage to lcov
+        uses: jandelgado/gcov2lcov-action@v1.0.0
+        with:
           infile: coverage.out
           outfile: coverage.lcov
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@v1.0.1
-      with:
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1.0.1
+        with:
           github-token: ${{ secrets.github_token }}
           path-to-lcov: coverage.lcov
-
